@@ -1,0 +1,137 @@
+
+=== Contents of file: C:/Users/jpryd/Documents/Ruby Files/well_grounded_rubyist/chapter_4_modules/practice_projects/todo_list/classes/input_output.rb ===
+# frozen_string_literal: true
+
+# the class that handle all the logic and control flow
+
+class InputOutput
+
+  def display_welcome_message
+    "Welcome To The Todo List App!"
+  end
+
+  def prompt_login_or_signup
+    window_login_prompt = "Do you want to [l]og in or [s]ign up?"
+    choice = gets.chomp.downcase
+
+    case choice
+    when "l"
+      puts "Login Chosen"
+      return :login
+    when "s"
+      puts "Signup Chosen"
+      return :signup
+    else
+      puts "Invalid choice. Please enter 'l' to log in or 's' to sign up."
+      prompt_login_or_signup  # Ask again if the user entered something unexpected
+    end
+  end
+
+  def prompt_username
+    puts "Please enter your username: "
+    gets.chomp
+  end
+
+  def prompt_password
+    puts "Please enter your password: "
+    gets.chomp
+  end
+
+
+
+end
+
+
+
+
+=== Contents of file: C:/Users/jpryd/Documents/Ruby Files/well_grounded_rubyist/chapter_4_modules/practice_projects/todo_list/classes/user.rb ===
+# frozen_string_literal: true
+
+require "json"
+
+class User
+  attr_accessor :username, :password
+
+  def initialize(username, password)
+    @username = username
+    @password = password
+  end
+
+  def save
+    data = {
+      username: @username,
+      password: @password
+    }
+
+    File.open(
+      "C:/Users/jpryd/Documents/Ruby Files/well_grounded_rubyist/chapter_4_modules/practice_projects/todo_list/todolistapp_db/users.json", "a") do |file|
+      file.puts JSON.generate(data)
+    end
+  end
+
+  def self.login(username, password)
+    users = []
+
+    File.open("C:/Users/jpryd/Documents/Ruby Files/well_grounded_rubyist/chapter_4_modules/practice_projects/todo_list/todolistapp_db/users.json", "r") do |file|
+      file.each_line do |line|
+        users << JSON.parse(line)
+      end
+    end
+
+    user_data = users.find { |user| user["username"] == username }
+
+    if user_data
+      if user_data["password"] == password
+        User.new(username, password)
+      else
+        puts "Incorrect password"
+        nil
+      end
+    else
+      puts "Username not found"
+      nil
+    end
+  end
+
+
+  def self.create(username, password)
+    user = User.new(username, password)
+    user.save
+    user
+  end
+
+end
+
+=== Contents of file: C:/Users/jpryd/Documents/Ruby Files/well_grounded_rubyist/chapter_4_modules/practice_projects/todo_list/todolistapp_db/users.json ===
+{"username":"jp","password":"ryds"}
+
+=== Contents of file: C:/Users/jpryd/Documents/Ruby Files/well_grounded_rubyist/chapter_4_modules/practice_projects/todo_list/classes/app_window.rb ===
+# frozen_string_literal: true
+
+# frozen_string_literal: true
+
+require "ruby2d"
+require_relative "input_output"
+
+class AppWindow
+  def initialize
+    # Create a new window. The "set" method can take options such as the window's width, height, and title.
+    Ruby2D::Window.set width: 1120, height: 950, title: "Todo List App"
+
+    # Show the window and start the event loop
+    Ruby2D::Window.show
+  end
+
+  def add_text(text, x:, y:, size: 20, color: "green")
+    # Create a new text object
+    text_object = Ruby2D::Text.new(
+      text,
+      x: x, y: y,
+      size: size,
+      color: color
+    )
+
+    # Add the text object to the window
+    Ruby2D::Window.add text_object
+  end
+end

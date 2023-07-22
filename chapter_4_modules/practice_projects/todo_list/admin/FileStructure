@@ -1,0 +1,11 @@
+- TodoListApp_CLI.rb (Contains the old CLI version code)
+- TodoListApp.rb (Contains the new version code with the app window)
+- /todolistapp_db
+   - users.json (Database file)
+- /classes
+  - input_output.rb (Handles user input/output)
+  - task.rb (Task class)
+  - todo_list.rb (TodoList class)
+  - user.rb (User class)
+  - calendar.rb (AppWindow class)
+  - app_window.rb (UI with Ruby2D gem)
